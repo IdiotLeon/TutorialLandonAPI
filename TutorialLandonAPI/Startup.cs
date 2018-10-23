@@ -62,7 +62,7 @@ namespace TutorialLandonAPI
                 // To get the HTTPS port (only in development)
                 var launchJsonConfig = new ConfigurationBuilder()
                     .SetBasePath(env.ContentRootPath)
-                    .AddJsonFile("Properties\\launchSettings.json")
+                    .AddJsonFile("Properties/launchSettings.json")
                     .Build();
 
                 _httpsPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress::sslPort");
