@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using TutorialLandonAPI.Infrastructure;
 using TutorialLandonAPI.Filters;
 using TutorialLandonAPI.Models;
@@ -27,6 +28,11 @@ namespace TutorialLandonAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // To use an in-memory database for quick dev and testing
+            // Todo: to swap out with a real database in production
+            services.AddDbContext<HotelApiContext>(opt => opt.UseInMemoryDatabase());
+
+            // To add framework services
             services.AddMvc(opt =>
             {
 
