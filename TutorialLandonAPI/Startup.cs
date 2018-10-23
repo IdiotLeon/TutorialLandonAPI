@@ -13,6 +13,9 @@ namespace TutorialLandonAPI
 {
     public class Startup
     {
+
+        private int? _httpsPort;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,9 +26,14 @@ namespace TutorialLandonAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(opt => {
+            services.AddMvc(opt =>
+            {
 
                 opt.Filters.Add(typeof(JsonExceptionFilter));
+
+                // To require HTTPS for all contributors
+                opt.SslPort = _httpsPort;
+                opt.Filters.Add(typeof(RequireHttpsAttribute));
 
                 var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
                 opt.OutputFormatters.Remove(jsonFormatter);
@@ -34,7 +42,8 @@ namespace TutorialLandonAPI
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
 
-            services.AddApiVersioning(opt => {
+            services.AddApiVersioning(opt =>
+            {
                 opt.ApiVersionReader = new MediaTypeApiVersionReader();
                 opt.AssumeDefaultVersionWhenUnspecified = true;
                 opt.ReportApiVersions = true;
@@ -49,6 +58,14 @@ namespace TutorialLandonAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                // To get the HTTPS port (only in development)
+                var launchJsonConfig = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("Properties\\launchSettings.json")
+                    .Build();
+
+                _httpsPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress::sslPort");
             }
             else
             {
