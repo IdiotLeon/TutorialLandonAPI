@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using TutorialLandonAPI.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Versioning;
+using TutorialLandonAPI.Filters;
 
 namespace TutorialLandonAPI
 {
@@ -29,6 +24,9 @@ namespace TutorialLandonAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(opt => {
+
+                opt.Filters.Add(typeof(JsonExceptionFilter));
+
                 var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
                 opt.OutputFormatters.Remove(jsonFormatter);
                 opt.OutputFormatters.Add(new IonOutputFormatter(jsonFormatter));
